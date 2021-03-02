@@ -68,19 +68,28 @@ namespace QuickCopy.Utilities
             }
 
             Log.Info("Checking for deleted files");
-            var inSecondOnly = (
-                from file2 in files2
-                let foundInSecondOnly = files1.All(
-                    file1 => !string.Equals(file1.PathSegmentHead.GetSegmentString(),
-                        file2.PathSegmentHead.GetSegmentString(),
-                        StringComparison.CurrentCultureIgnoreCase))
-                where foundInSecondOnly
-                select file2).ToList();
+            var inSecondOnly = new List<FileInfoParser>();
+            foreach (var file2 in files2)
+            {
+                var foundInSecondOnly = files1.All(file1 => !string.Equals(file1.PathSegmentHead.GetSegmentString(),
+                    file2.PathSegmentHead.GetSegmentString(), StringComparison.CurrentCultureIgnoreCase));
+                if (foundInSecondOnly) inSecondOnly.Add(file2);
+            }
 
             Log.Info("Enumerating possible actions");
-            var actions = inFirstOnly.Select(first => new FileInfoParserAction(first, null, ActionType.Create))
+            var actions = new List<FileInfoParserAction>();
+            
+            var firstPaths = inFirstOnly.Select(first => new FileInfoParserAction(first,
+                    null,
+                    ActionType.Create))
                 .ToList();
-            actions.AddRange(inSecondOnly.Select(second => new FileInfoParserAction(null, second, ActionType.Delete)));
+
+            var secondPaths = inSecondOnly.Select(second => new FileInfoParserAction(
+                null, second,
+                ActionType.Delete));
+
+            actions.AddRange(firstPaths);
+            actions.AddRange(secondPaths);
 
             foreach (var (item1, item2) in inBoth)
             {

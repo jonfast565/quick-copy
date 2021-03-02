@@ -14,25 +14,39 @@ namespace QuickCopy.Utilities
 
         public static void RunCopy(this ProgramOptions opts)
         {
-            var changeDetector = new ChangeDetector(opts);
-            if (!changeDetector.Changed())
+            try
             {
-                Log.Info("No changes detected");
-                return;
-            }
+                var changeDetector = new ChangeDetector(opts);
+                if (!changeDetector.Changed())
+                {
+                    Log.Info("No changes detected");
+                    return;
+                }
 
-            var copier = new BasicCopier(opts);
-            copier.Copy();
-            Log.Info("Files copied");
+                var copier = new BasicCopier(opts);
+                copier.Copy();
+                Log.Info("Files copied");
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
         }
 
         public static void RunIncrementalCopy(this ProgramOptions opts)
         {
-            var changeDetector = new ChangeDetector(opts);
-            var changes = changeDetector.IncrementalChanges();
-            var copier = new BasicCopier(opts);
-            copier.IncrementalCopy(changes);
-            Log.Info("Files copied");
+            try
+            {
+                var changeDetector = new ChangeDetector(opts);
+                var changes = changeDetector.IncrementalChanges();
+                var copier = new BasicCopier(opts);
+                copier.IncrementalCopy(changes);
+                Log.Info("Files copied");
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
         }
     }
 }

@@ -26,7 +26,8 @@ namespace QuickCopy.PathModels
             var remainingSegments = GetRemainingSegments();
             var result = remainingSegments.Aggregate($"{separator}",
                     (current, segment) => current + segment.Name + $"{separator}")
-                .TrimEnd(separator);
+                .TrimEnd(separator)
+                .TrimStart(separator);
             return result;
         }
 

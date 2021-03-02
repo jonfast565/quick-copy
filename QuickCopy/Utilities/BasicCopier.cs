@@ -27,14 +27,34 @@ namespace QuickCopy.Utilities
 
         public void IncrementalCopy(List<FileInfoParserAction> actions)
         {
-            var orderedActions = 
-                actions.OrderByDescending(x => x.GetSourceOrDestinationLength());
+            var orderedCreates = 
+                actions
+                    .Where(x => x.Type == ActionType.Create || x.Type == ActionType.Update)
+                    .OrderBy(x => x.GetSourceLength());
 
-            foreach (var action in orderedActions)
+            var orderedDeletes =
+                actions
+                    .Where(x => x.Type == ActionType.Delete)
+                    .OrderByDescending(x => x.GetDestinationLength());
+
+            foreach (var action in orderedCreates)
             {
+                // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
                 switch (action.Type)
                 {
                     case ActionType.Create:
+                        var pp = new PathParser(Options.TargetDirectory);
+                        pp.AppendSegment(action.ParserSource.PathSegmentHead.GetSegmentString());
+                        var destinationSegment = pp.SegmentList.GetSegmentString();
+                        if (action.ParserSource.IsFile)
+                        {
+                            File.Copy(action.ParserSource.File.FullName, destinationSegment, true);
+                        }
+                        else
+                        {
+                            DirectoryCopy(action.ParserSource.Directory.FullName, destinationSegment, true, false);
+                        }
+                        break;
                     case ActionType.Update:
                         if (action.ParserSource.IsFile)
                         {
@@ -44,9 +64,19 @@ namespace QuickCopy.Utilities
                         {
                             DirectoryCopy(action.ParserSource.Directory.FullName, action.ParserDestination.Directory.FullName, true, false);
                         }
-
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            foreach (var action in orderedDeletes)
+            {
+                // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+                switch (action.Type)
+                {
                     case ActionType.Delete:
+                        if (!Options.EnableDeletes) break;
                         if (action.ParserDestination.IsFile)
                         {
                             File.Delete(action.ParserDestination.File.FullName);
@@ -56,8 +86,6 @@ namespace QuickCopy.Utilities
                             Directory.Delete(action.ParserDestination.Directory.FullName, true);
                         }
                         break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
                 }
             }
         }
@@ -86,7 +114,7 @@ namespace QuickCopy.Utilities
             foreach (var file in files)
             {
                 var tempPath = Path.Combine(destDirName, file.Name);
-                file.CopyTo(tempPath, false);
+                file.CopyTo(tempPath, true);
                 Log.Info($"Copied {tempPath}");
             }
 

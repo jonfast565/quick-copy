@@ -51,7 +51,6 @@ namespace QuickCopy
                 Log.Info($"Waiting {opts.CheckTime}ms to continue.");
                 Thread.Sleep(Convert.ToInt32(opts.CheckTime));
             }
-            // Log.Info("Quitting console mode.");
         }
     }
 }

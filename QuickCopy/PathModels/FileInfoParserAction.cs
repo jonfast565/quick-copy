@@ -13,20 +13,14 @@
         public FileInfoParser ParserDestination { get; }
         public ActionType Type { get; }
 
-        public int GetSourceOrDestinationLength()
+        public int GetSourceLength()
         {
-            var length = 0;
-            if (ParserSource == null)
-            {
-                length = ParserDestination.PathSegmentHead.GetSegmentLength();
-            }
+            return ParserSource.PathSegmentHead.GetSegmentLength();
+        }
 
-            if (ParserDestination == null)
-            {
-                length = ParserSource.PathSegmentHead.GetSegmentLength();
-            }
-
-            return length;
+        public int GetDestinationLength()
+        {
+            return ParserDestination.PathSegmentHead.GetSegmentLength();
         }
     }
 }

@@ -61,6 +61,30 @@ namespace QuickCopy.PathModels
             return result;
         }
 
+        public PathParser AppendSegment(string newSegment)
+        {
+            var segmentParser = new PathParser(newSegment);
+            var last = GetLast();
+            last.Next = segmentParser.SegmentList;
+            return this;
+        }
+
+        private PathSegment GetLast()
+        {
+            var initialSegment = SegmentList;
+            var segment = initialSegment;
+
+            var queue = new Stack<PathSegment>();
+            while (segment != null)
+            {
+                queue.Push(segment);
+                segment = segment.Next;
+            }
+
+            var last = queue.Pop();
+            return last;
+        }
+
         public PathSegment RemoveLast()
         {
             var initialSegment = SegmentList;
