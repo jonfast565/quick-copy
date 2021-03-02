@@ -43,9 +43,7 @@ namespace QuickCopy.Utilities
                 switch (action.Type)
                 {
                     case ActionType.Create:
-                        var pp = new PathParser(Options.TargetDirectory);
-                        pp.AppendSegment(action.ParserSource.PathSegmentHead.GetSegmentString());
-                        var destinationSegment = pp.SegmentList.GetSegmentString();
+                        var destinationSegment = GetDestinationFromSegment(action);
                         if (action.ParserSource.IsFile)
                         {
                             File.Copy(action.ParserSource.File.FullName, destinationSegment, true);
@@ -88,6 +86,14 @@ namespace QuickCopy.Utilities
                         break;
                 }
             }
+        }
+
+        private string GetDestinationFromSegment(FileInfoParserAction action)
+        {
+            var pp = new PathParser(Options.TargetDirectory);
+            pp.AppendSegment(action.ParserSource.PathSegmentHead.GetSegmentString());
+            var destinationSegment = pp.SegmentList.GetSegmentString();
+            return destinationSegment;
         }
 
         private static void DirectoryCopy(string sourceDirName, string destDirName, bool recursive, bool cleanFolder)
