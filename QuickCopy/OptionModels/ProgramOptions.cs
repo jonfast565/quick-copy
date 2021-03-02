@@ -18,5 +18,8 @@ namespace QuickCopy.OptionModels
 
         [Option('d', "deletes", Required = false, Default = true, HelpText = "Enables/disables deletes in target (i.e. when the target has more items than the source)")]
         public bool EnableDeletes { get; set; }
+
+        [Option('k', "skip", Required = false, Default = true, HelpText = "A folder skip")]
+        public string SkipFolder { get; set; }
     }
 }
