@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace QuickCopy.PathModels
@@ -36,21 +37,11 @@ namespace QuickCopy.PathModels
             return GetSegmentString('/').Split('/').Length;
         }
 
-        public bool Contains(PathSegment skipFolderSegmentList)
+        public bool Contains(PathSegment folderSegment)
         {
-            /*
-            var segment = this;
-            var comparisonSegment = skipFolderSegmentList;
-            while (segment != null)
-            {
-                if (comparisonSegment.Name == segment.Name)
-                {
-                    comparisonSegment.Name;
-                }
-                segment = Next;
-            }
-            */
-            return false;
+            var str1 = GetSegmentString();
+            var str2 = folderSegment.GetSegmentString();
+            return str1.Contains(str2, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }

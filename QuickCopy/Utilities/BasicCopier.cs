@@ -28,7 +28,7 @@ namespace QuickCopy.Utilities
         {
             var skipFolder = new PathParser(Options.SkipFolder);
 
-            var orderedCreates = 
+            var orderedCreates =
                 actions
                     .Where(x => x.Type == ActionType.Create || x.Type == ActionType.Update)
                     .OrderBy(x => x.GetSourceLength());
@@ -39,7 +39,6 @@ namespace QuickCopy.Utilities
                     .OrderByDescending(x => x.GetDestinationLength());
 
             foreach (var action in orderedCreates)
-            {
                 // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
                 switch (action.Type)
                 {
@@ -49,50 +48,38 @@ namespace QuickCopy.Utilities
                             break;
 
                         if (action.ParserSource.IsFile)
-                        {
                             File.Copy(action.ParserSource.File.FullName, destinationSegment, true);
-                        }
                         else
-                        {
                             DirectoryCopy(action.ParserSource.Directory.FullName, destinationSegment, true, false);
-                        }
                         break;
                     case ActionType.Update:
                         if (action.ParserSource.PathSegmentHead.Contains(skipFolder.SegmentList))
                             break;
 
                         if (action.ParserSource.IsFile)
-                        {
                             File.Copy(action.ParserSource.File.FullName, action.ParserDestination.File.FullName, true);
-                        }
                         else
-                        {
-                            DirectoryCopy(action.ParserSource.Directory.FullName, action.ParserDestination.Directory.FullName, true, false);
-                        }
+                            DirectoryCopy(action.ParserSource.Directory.FullName,
+                                action.ParserDestination.Directory.FullName, true, false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-            }
 
             foreach (var action in orderedDeletes)
-            {
                 // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
                 switch (action.Type)
                 {
                     case ActionType.Delete:
-                        if (!Options.EnableDeletes) break;
+                        if (!Options.EnableDeletes)
+                            break;
+
                         if (action.ParserDestination.IsFile)
-                        {
                             File.Delete(action.ParserDestination.File.FullName);
-                        }
                         else
-                        {
                             Directory.Delete(action.ParserDestination.Directory.FullName, true);
-                        }
                         break;
                 }
-            }
         }
 
         private string GetDestinationFromSegment(FileInfoParserAction action)
