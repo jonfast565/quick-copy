@@ -21,7 +21,7 @@ namespace QuickCopy.Tests
         {
             var pathParser1 = new PathParser("C:\\Users\\jfast\\Desktop\\Repos\\");
             var pathParser2 = new PathParser("Desktop\\Repos");
-            var result = pathParser1.Segment.Contains(pathParser2.Segment);
+            var result = pathParser1.Segment.ContainsAllOfSegment(pathParser2.Segment);
             Assert.IsTrue(result);
         }
     }

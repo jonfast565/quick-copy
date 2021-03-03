@@ -38,6 +38,11 @@ namespace QuickCopy.Utilities
             var dir1 = new DirectoryInfo(Options.SourceDirectory);
             var dir2 = new DirectoryInfo(Options.TargetDirectory);
 
+            if (!Directory.Exists(dir2.FullName))
+            {
+                Directory.CreateDirectory(dir2.FullName);
+            }
+
             Log.Info($"Enumerate source directory: {dir1.FullName}");
             var files1 = new FileSystemEnumerable(dir1, "*.*", SearchOption.AllDirectories)
                 .Select(x => new FileInfoParser(x.FullName, Options.SourceDirectory)).ToList();
@@ -78,25 +83,31 @@ namespace QuickCopy.Utilities
 
             Log.Info("Enumerating possible actions");
             var actions = new List<FileInfoParserAction>();
-            
-            var firstPaths = inFirstOnly.Select(first => new FileInfoParserAction(first,
-                    null,
-                    ActionType.Create))
+
+            var firstPaths = inFirstOnly
+                .Select(first =>
+                    new FileInfoParserAction(first,
+                        null,
+                        ActionType.Create))
                 .ToList();
 
-            var secondPaths = inSecondOnly.Select(second => new FileInfoParserAction(
-                null, second,
-                ActionType.Delete));
+            var secondPaths = inSecondOnly
+                .Select(second =>
+                    new FileInfoParserAction(
+                        null, second,
+                        ActionType.Delete));
 
             actions.AddRange(firstPaths);
             actions.AddRange(secondPaths);
 
             foreach (var (item1, item2) in inBoth)
             {
-                if (!item1.IsFile || !item2.IsFile) continue;
+                if (!item1.IsFile || !item2.IsFile) 
+                    continue;
 
                 if (item1.File.Length != item2.File.Length)
-                    actions.Add(new FileInfoParserAction(item1, item2, ActionType.Update));
+                    actions.Add(
+                        new FileInfoParserAction(item1, item2, ActionType.Update));
             }
 
             return actions;

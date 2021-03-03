@@ -25,7 +25,7 @@ namespace QuickCopy.PathModels
             return results;
         }
 
-        public string GetSegmentString(char separator = '/')
+        public string GetSegmentString(char separator = Splitters.WindowsSplitter)
         {
             var remainingSegments = GetRemainingSegments();
             var result = remainingSegments.Aggregate($"{separator}",
@@ -37,16 +37,18 @@ namespace QuickCopy.PathModels
 
         public int GetSegmentLength()
         {
-            return GetSegmentString('/').Split('/').Length;
+            return GetSegmentString(Splitters.Splitter)
+                .Split(Splitters.Splitter).Length;
         }
 
-        public bool Contains(PathSegment folderSegment)
+        public bool ContainsAllOfSegment(PathSegment folderSegment)
         {
-            var str1 = GetSegmentString('|');
-            var str2 = folderSegment.GetSegmentString('|');
-            var split1 = str1.Split('|');
-            var split2 = str2.Split('|');
+            var str1 = GetSegmentString(Splitters.Splitter);
+            var str2 = folderSegment.GetSegmentString(Splitters.Splitter);
+            var split1 = str1.Split(Splitters.Splitter);
+            var split2 = str2.Split(Splitters.Splitter);
             var splitCtr = 0;
+
             foreach (var t in split1)
             {
                 if (split2[splitCtr] == t)

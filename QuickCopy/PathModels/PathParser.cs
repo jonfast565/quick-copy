@@ -16,7 +16,9 @@ namespace QuickCopy.PathModels
 
         private static string NormalizePath(string path)
         {
-            var normalizedPath = path.Replace('\\', '/');
+            var normalizedPath = path
+                .Replace(Splitters.WindowsSplitter, Splitters.Splitter)
+                .Replace(Splitters.UnixSplitter, Splitters.Splitter);
             return normalizedPath;
         }
 
@@ -24,7 +26,7 @@ namespace QuickCopy.PathModels
         {
             var normalized = NormalizePath(path);
             var split = normalized
-                .Split('/', StringSplitOptions.RemoveEmptyEntries)
+                .Split(Splitters.Splitter, StringSplitOptions.RemoveEmptyEntries)
                 .Reverse();
 
             PathSegment nextSegment = null;

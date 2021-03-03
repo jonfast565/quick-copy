@@ -22,5 +22,18 @@
         {
             return Destination.Segment.GetSegmentLength();
         }
+
+        public string GetDestinationFromSegment(string targetDirectory)
+        {
+            var pp = new PathParser(targetDirectory);
+            var fif = new FileInfoParser(targetDirectory, targetDirectory);
+            pp.AppendSegment(Source.Segment.GetSegmentString());
+            var destinationSegment = pp.Segment.GetSegmentString();
+            if (fif.IsUncPath)
+            {
+                return "\\\\" + destinationSegment;
+            }
+            return destinationSegment;
+        }
     }
 }

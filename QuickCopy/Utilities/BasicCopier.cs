@@ -43,36 +43,39 @@ namespace QuickCopy.Utilities
                 switch (action.Type)
                 {
                     case ActionType.Create:
-                        var destinationSegment = GetDestinationFromSegment(action);
-                        if (action.Source.Segment.Contains(skipFolder.Segment))
+                        var destinationSegment = action.GetDestinationFromSegment(Options.TargetDirectory);
+                        if (action.Source.Segment.ContainsAllOfSegment(skipFolder.Segment))
                         {
-                            Log.Info($"Skipped {action.Source.File.FullName} because {skipFolder.Segment.GetSegmentString()} skipped.");
+                            Log.Info($"Skipped {action.Source.GetPath()} because {skipFolder.Segment.GetSegmentString()} skipped.");
                             break;
                         }
 
                         if (action.Source.IsFile)
                         {
-                            File.Copy(action.Source.File.FullName, destinationSegment, true);
-                            Log.Info($"Copied {action.Source.File.FullName}");
+                            File.Copy(action.Source.GetPath(), 
+                                destinationSegment, true);
+                            Log.Info($"Copied {action.Source.GetPath()}");
                         }
                         else
-                            DirectoryCopy(action.Source.Directory.FullName, destinationSegment, true, false);
+                            DirectoryCopy(action.Source.GetPath(), 
+                                destinationSegment, true, false);
                         break;
                     case ActionType.Update:
-                        if (action.Source.Segment.Contains(skipFolder.Segment))
+                        if (action.Source.Segment.ContainsAllOfSegment(skipFolder.Segment))
                         {
-                            Log.Info($"Skipped {action.Source.File.FullName} because {skipFolder.Segment.GetSegmentString()} skipped.");
+                            Log.Info($"Skipped {action.Source.GetPath()} because {skipFolder.Segment.GetSegmentString()} skipped.");
                             break;
                         }
 
                         if (action.Source.IsFile)
                         {
-                            File.Copy(action.Source.File.FullName, action.Destination.File.FullName, true);
-                            Log.Info($"Copied {action.Source.File.FullName} (changed)");
+                            File.Copy(action.Source.GetPath(), 
+                                action.Destination.GetPath(), true);
+                            Log.Info($"Copied {action.Source.GetPath()} (changed)");
                         }
                         else
-                            DirectoryCopy(action.Source.Directory.FullName,
-                                action.Destination.Directory.FullName, true, false);
+                            DirectoryCopy(action.Source.GetPath(),
+                                action.Destination.GetPath(), true, false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -90,19 +93,11 @@ namespace QuickCopy.Utilities
                         }
 
                         if (action.Destination.IsFile)
-                            File.Delete(action.Destination.File.FullName);
+                            File.Delete(action.Destination.GetPath());
                         else
-                            Directory.Delete(action.Destination.Directory.FullName, true);
+                            Directory.Delete(action.Destination.GetPath(), true);
                         break;
                 }
-        }
-
-        private string GetDestinationFromSegment(FileInfoParserAction action)
-        {
-            var pp = new PathParser(Options.TargetDirectory);
-            pp.AppendSegment(action.Source.Segment.GetSegmentString());
-            var destinationSegment = pp.Segment.GetSegmentString();
-            return destinationSegment;
         }
 
         private static void DirectoryCopy(string sourceDirName, string destDirName, bool recursive, bool cleanFolder)
