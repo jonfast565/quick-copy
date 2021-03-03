@@ -16,6 +16,9 @@ namespace QuickCopy
 
         private static void Main(string[] args)
         {
+            var programDirectory = Environment.CurrentDirectory;
+            var header = new Header();
+            header.Print(Log, programDirectory);
             Run(args);
         }
 
