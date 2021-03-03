@@ -2,7 +2,7 @@
   "profiles": {
     "QuickCopy": {
       "commandName": "Project",
-      "commandLineArgs": "-r Console -s \"C:\\Users\\jfast\\OneDrive - American College of Cardiology\\Desktop\\Test1\" -t \"C:\\Users\\jfast\\OneDrive - American College of Cardiology\\Desktop\\Test2\""
+      "commandLineArgs": "-r Console -s \"C:\\Users\\jfast\\OneDrive - American College of Cardiology\\Desktop\\Test1\" -t \"C:\\Users\\jfast\\OneDrive - American College of Cardiology\\Desktop\\Test2\" -k /Logs"
     }
   }
 }

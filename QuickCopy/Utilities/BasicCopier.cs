@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using MoreLinq;
 using NLog;
 using QuickCopy.OptionModels;
 using QuickCopy.PathModels;
@@ -27,6 +26,8 @@ namespace QuickCopy.Utilities
 
         public void IncrementalCopy(List<FileInfoParserAction> actions)
         {
+            var skipFolder = new PathParser(Options.SkipFolder);
+
             var orderedCreates = 
                 actions
                     .Where(x => x.Type == ActionType.Create || x.Type == ActionType.Update)
@@ -44,6 +45,9 @@ namespace QuickCopy.Utilities
                 {
                     case ActionType.Create:
                         var destinationSegment = GetDestinationFromSegment(action);
+                        if (action.ParserSource.PathSegmentHead.Contains(skipFolder.SegmentList))
+                            break;
+
                         if (action.ParserSource.IsFile)
                         {
                             File.Copy(action.ParserSource.File.FullName, destinationSegment, true);
@@ -54,6 +58,9 @@ namespace QuickCopy.Utilities
                         }
                         break;
                     case ActionType.Update:
+                        if (action.ParserSource.PathSegmentHead.Contains(skipFolder.SegmentList))
+                            break;
+
                         if (action.ParserSource.IsFile)
                         {
                             File.Copy(action.ParserSource.File.FullName, action.ParserDestination.File.FullName, true);

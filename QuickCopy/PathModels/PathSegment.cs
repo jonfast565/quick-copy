@@ -35,5 +35,22 @@ namespace QuickCopy.PathModels
         {
             return GetSegmentString('/').Split('/').Length;
         }
+
+        public bool Contains(PathSegment skipFolderSegmentList)
+        {
+            /*
+            var segment = this;
+            var comparisonSegment = skipFolderSegmentList;
+            while (segment != null)
+            {
+                if (comparisonSegment.Name == segment.Name)
+                {
+                    comparisonSegment.Name;
+                }
+                segment = Next;
+            }
+            */
+            return false;
+        }
     }
 }
