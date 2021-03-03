@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace QuickCopy.PathModels
+﻿namespace QuickCopy.PathLib
 {
     public static class Splitters
     {

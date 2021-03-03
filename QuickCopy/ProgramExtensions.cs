@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Security.Cryptography;
-using System.Text;
 using NLog;
-using NLog.Fluent;
-using QuickCopy.OptionModels;
-using QuickCopy.PathModels;
+using QuickCopy.Configuration;
 
-namespace QuickCopy.Utilities
+namespace QuickCopy
 {
     public static class ProgramExtensions
     {
@@ -23,7 +19,7 @@ namespace QuickCopy.Utilities
                     return;
                 }
 
-                var copier = new BasicCopier(opts);
+                var copier = new DefaultCopier(opts);
                 copier.Copy();
                 Log.Info("Files copied");
             }
@@ -39,7 +35,7 @@ namespace QuickCopy.Utilities
             {
                 var changeDetector = new ChangeDetector(opts);
                 var changes = changeDetector.IncrementalChanges();
-                var copier = new BasicCopier(opts);
+                var copier = new DefaultCopier(opts);
                 copier.IncrementalCopy(changes);
                 Log.Info("Files copied");
             }

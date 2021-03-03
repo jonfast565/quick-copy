@@ -3,9 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31019.35
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickCopy", "QuickCopy.csproj", "{FAD5A844-43F4-4B5C-8431-361F8EDFFE3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCopy", "QuickCopy.csproj", "{FAD5A844-43F4-4B5C-8431-361F8EDFFE3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickCopy.Tests", "..\QuickCopy.Tests\QuickCopy.Tests.csproj", "{226317D4-98C6-4B90-AADC-F53B62747597}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickCopy.Tests", "..\QuickCopy.Tests\QuickCopy.Tests.csproj", "{226317D4-98C6-4B90-AADC-F53B62747597}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickCopy.Configuration", "..\QuickCopy.Configuration\QuickCopy.Configuration.csproj", "{D4144C17-61E0-4A25-B179-145B39070B01}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickCopy.Utilities", "..\QuickCopy.Utilities\QuickCopy.Utilities.csproj", "{CC372762-2CCB-4E52-A42A-F4ACD768E005}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickCopy.PathLib", "..\QuickCopy.PathLib\QuickCopy.PathLib.csproj", "{0B744E1C-0E05-426D-89FB-BFC62AFC6FD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +27,18 @@ Global
 		{226317D4-98C6-4B90-AADC-F53B62747597}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{226317D4-98C6-4B90-AADC-F53B62747597}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{226317D4-98C6-4B90-AADC-F53B62747597}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4144C17-61E0-4A25-B179-145B39070B01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4144C17-61E0-4A25-B179-145B39070B01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4144C17-61E0-4A25-B179-145B39070B01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4144C17-61E0-4A25-B179-145B39070B01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC372762-2CCB-4E52-A42A-F4ACD768E005}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC372762-2CCB-4E52-A42A-F4ACD768E005}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC372762-2CCB-4E52-A42A-F4ACD768E005}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC372762-2CCB-4E52-A42A-F4ACD768E005}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B744E1C-0E05-426D-89FB-BFC62AFC6FD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B744E1C-0E05-426D-89FB-BFC62AFC6FD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B744E1C-0E05-426D-89FB-BFC62AFC6FD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B744E1C-0E05-426D-89FB-BFC62AFC6FD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

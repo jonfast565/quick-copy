@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NLog;
-using QuickCopy.OptionModels;
-using QuickCopy.PathModels;
+using QuickCopy.Configuration;
+using QuickCopy.PathLib;
 
-namespace QuickCopy.Utilities
+namespace QuickCopy
 {
-    public class BasicCopier
+    public class DefaultCopier
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        public BasicCopier(ProgramOptions opts)
+        public DefaultCopier(ProgramOptions opts)
         {
             Options = opts;
         }

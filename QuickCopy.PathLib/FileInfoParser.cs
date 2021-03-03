@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace QuickCopy.PathModels
+namespace QuickCopy.PathLib
 {
     public class FileInfoParser
     {

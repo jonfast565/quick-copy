@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace QuickCopy.OptionModels
+namespace QuickCopy.Configuration
 {
     public class ProgramOptions
     {

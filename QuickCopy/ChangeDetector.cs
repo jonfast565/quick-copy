@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NLog;
-using QuickCopy.OptionModels;
-using QuickCopy.PathModels;
+using QuickCopy.Configuration;
+using QuickCopy.PathLib;
+using QuickCopy.Utilities;
 
-namespace QuickCopy.Utilities
+namespace QuickCopy
 {
     public class ChangeDetector
     {

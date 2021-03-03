@@ -1,7 +1,7 @@
 using System;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
-using QuickCopy.PathModels;
+using QuickCopy.PathLib;
 
 namespace QuickCopy.Tests
 {

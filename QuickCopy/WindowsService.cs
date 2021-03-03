@@ -1,6 +1,6 @@
 ﻿using System.ServiceProcess;
 using System.Timers;
-using QuickCopy.OptionModels;
+using QuickCopy.Configuration;
 using QuickCopy.Utilities;
 
 namespace QuickCopy

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using NLog;
 
-namespace QuickCopy.Utilities
+namespace QuickCopy
 {
     class Header
     {

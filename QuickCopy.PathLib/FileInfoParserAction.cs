@@ -1,4 +1,4 @@
-﻿namespace QuickCopy.PathModels
+﻿namespace QuickCopy.PathLib
 {
     public class FileInfoParserAction
     {

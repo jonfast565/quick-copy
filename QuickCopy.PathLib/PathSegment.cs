@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.ExceptionServices;
-using MoreLinq;
 
-namespace QuickCopy.PathModels
+namespace QuickCopy.PathLib
 {
     public class PathSegment
     {

@@ -1,4 +1,4 @@
-﻿namespace QuickCopy.OptionModels
+﻿namespace QuickCopy.Configuration
 {
     public enum RuntimeType
     {

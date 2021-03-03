@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MoreLinq.Extensions;
+using MoreLinq;
 
-namespace QuickCopy.PathModels
+namespace QuickCopy.PathLib
 {
     public class PathParser
     {

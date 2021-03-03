@@ -6,11 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
-    <PackageReference Include="morelinq" Version="3.3.2" />
     <PackageReference Include="NLog" Version="4.7.8" />
     <PackageReference Include="System.Security.Permissions" Version="5.0.0" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QuickCopy.Configuration\QuickCopy.Configuration.csproj" />
+    <ProjectReference Include="..\QuickCopy.PathLib\QuickCopy.PathLib.csproj" />
+    <ProjectReference Include="..\QuickCopy.Utilities\QuickCopy.Utilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>
