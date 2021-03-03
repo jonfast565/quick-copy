@@ -54,8 +54,8 @@ namespace QuickCopy.Utilities
             {
                 var foundInFirstOnly = true;
                 foreach (var file2 in files2.Where(file2 =>
-                    string.Equals(file1.PathSegmentHead.GetSegmentString(),
-                        file2.PathSegmentHead.GetSegmentString(),
+                    string.Equals(file1.Segment.GetSegmentString(),
+                        file2.Segment.GetSegmentString(),
                         StringComparison.CurrentCultureIgnoreCase)))
                 {
                     inBoth.Add(new Tuple<FileInfoParser, FileInfoParser>(file1, file2));
@@ -71,8 +71,8 @@ namespace QuickCopy.Utilities
             var inSecondOnly = new List<FileInfoParser>();
             foreach (var file2 in files2)
             {
-                var foundInSecondOnly = files1.All(file1 => !string.Equals(file1.PathSegmentHead.GetSegmentString(),
-                    file2.PathSegmentHead.GetSegmentString(), StringComparison.CurrentCultureIgnoreCase));
+                var foundInSecondOnly = files1.All(file1 => !string.Equals(file1.Segment.GetSegmentString(),
+                    file2.Segment.GetSegmentString(), StringComparison.CurrentCultureIgnoreCase));
                 if (foundInSecondOnly) inSecondOnly.Add(file2);
             }
 

@@ -4,23 +4,23 @@
     {
         public FileInfoParserAction(FileInfoParser source, FileInfoParser destination, ActionType type)
         {
-            ParserSource = source;
-            ParserDestination = destination;
+            Source = source;
+            Destination = destination;
             Type = type;
         }
 
-        public FileInfoParser ParserSource { get; }
-        public FileInfoParser ParserDestination { get; }
+        public FileInfoParser Source { get; }
+        public FileInfoParser Destination { get; }
         public ActionType Type { get; }
 
         public int GetSourceLength()
         {
-            return ParserSource.PathSegmentHead.GetSegmentLength();
+            return Source.Segment.GetSegmentLength();
         }
 
         public int GetDestinationLength()
         {
-            return ParserDestination.PathSegmentHead.GetSegmentLength();
+            return Destination.Segment.GetSegmentLength();
         }
     }
 }

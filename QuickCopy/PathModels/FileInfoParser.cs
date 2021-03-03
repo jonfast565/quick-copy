@@ -11,17 +11,17 @@ namespace QuickCopy.PathModels
             {
                 IsFile = false;
                 Directory = new DirectoryInfo(path);
-                PathSegmentHead = new PathParser(baseDirectory).GetDifferingSegment(new PathParser(Directory.FullName));
+                Segment = new PathParser(baseDirectory).GetDifferingSegment(new PathParser(Directory.FullName));
             }
             else
             {
                 IsFile = true;
                 File = new FileInfo(path);
-                PathSegmentHead = new PathParser(baseDirectory).GetDifferingSegment(new PathParser(File.FullName));
+                Segment = new PathParser(baseDirectory).GetDifferingSegment(new PathParser(File.FullName));
             }
         }
 
-        public PathSegment PathSegmentHead { get; }
+        public PathSegment Segment { get; }
         public FileInfo File { get; }
         public DirectoryInfo Directory { get; }
         public bool IsFile { get; }

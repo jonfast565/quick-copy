@@ -44,23 +44,23 @@ namespace QuickCopy.Utilities
                 {
                     case ActionType.Create:
                         var destinationSegment = GetDestinationFromSegment(action);
-                        if (action.ParserSource.PathSegmentHead.Contains(skipFolder.SegmentList))
+                        if (action.Source.Segment.Contains(skipFolder.Segment))
                             break;
 
-                        if (action.ParserSource.IsFile)
-                            File.Copy(action.ParserSource.File.FullName, destinationSegment, true);
+                        if (action.Source.IsFile)
+                            File.Copy(action.Source.File.FullName, destinationSegment, true);
                         else
-                            DirectoryCopy(action.ParserSource.Directory.FullName, destinationSegment, true, false);
+                            DirectoryCopy(action.Source.Directory.FullName, destinationSegment, true, false);
                         break;
                     case ActionType.Update:
-                        if (action.ParserSource.PathSegmentHead.Contains(skipFolder.SegmentList))
+                        if (action.Source.Segment.Contains(skipFolder.Segment))
                             break;
 
-                        if (action.ParserSource.IsFile)
-                            File.Copy(action.ParserSource.File.FullName, action.ParserDestination.File.FullName, true);
+                        if (action.Source.IsFile)
+                            File.Copy(action.Source.File.FullName, action.Destination.File.FullName, true);
                         else
-                            DirectoryCopy(action.ParserSource.Directory.FullName,
-                                action.ParserDestination.Directory.FullName, true, false);
+                            DirectoryCopy(action.Source.Directory.FullName,
+                                action.Destination.Directory.FullName, true, false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -74,10 +74,10 @@ namespace QuickCopy.Utilities
                         if (!Options.EnableDeletes)
                             break;
 
-                        if (action.ParserDestination.IsFile)
-                            File.Delete(action.ParserDestination.File.FullName);
+                        if (action.Destination.IsFile)
+                            File.Delete(action.Destination.File.FullName);
                         else
-                            Directory.Delete(action.ParserDestination.Directory.FullName, true);
+                            Directory.Delete(action.Destination.Directory.FullName, true);
                         break;
                 }
         }
@@ -85,8 +85,8 @@ namespace QuickCopy.Utilities
         private string GetDestinationFromSegment(FileInfoParserAction action)
         {
             var pp = new PathParser(Options.TargetDirectory);
-            pp.AppendSegment(action.ParserSource.PathSegmentHead.GetSegmentString());
-            var destinationSegment = pp.SegmentList.GetSegmentString();
+            pp.AppendSegment(action.Source.Segment.GetSegmentString());
+            var destinationSegment = pp.Segment.GetSegmentString();
             return destinationSegment;
         }
 

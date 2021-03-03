@@ -9,10 +9,10 @@ namespace QuickCopy.PathModels
     {
         public PathParser(string path)
         {
-            SegmentList = BuildSegments(path);
+            Segment = BuildSegments(path);
         }
 
-        public PathSegment SegmentList { get; set; }
+        public PathSegment Segment { get; set; }
 
         private static string NormalizePath(string path)
         {
@@ -44,8 +44,8 @@ namespace QuickCopy.PathModels
 
         public PathSegment GetDifferingSegment(PathParser p)
         {
-            var otherSegmentList = p.SegmentList.GetRemainingSegments();
-            var mySegments = SegmentList.GetRemainingSegments();
+            var otherSegmentList = p.Segment.GetRemainingSegments();
+            var mySegments = Segment.GetRemainingSegments();
 
             var segments = mySegments
                 .ZipLongest(otherSegmentList,
@@ -65,13 +65,13 @@ namespace QuickCopy.PathModels
         {
             var segmentParser = new PathParser(newSegment);
             var last = GetLast();
-            last.Next = segmentParser.SegmentList;
+            last.Next = segmentParser.Segment;
             return this;
         }
 
         private PathSegment GetLast()
         {
-            var initialSegment = SegmentList;
+            var initialSegment = Segment;
             var segment = initialSegment;
 
             var queue = new Stack<PathSegment>();
@@ -87,7 +87,7 @@ namespace QuickCopy.PathModels
 
         public PathSegment RemoveLast()
         {
-            var initialSegment = SegmentList;
+            var initialSegment = Segment;
             var segment = initialSegment;
 
             var queue = new Stack<PathSegment>();
