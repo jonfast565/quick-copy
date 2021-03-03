@@ -45,19 +45,31 @@ namespace QuickCopy.Utilities
                     case ActionType.Create:
                         var destinationSegment = GetDestinationFromSegment(action);
                         if (action.Source.Segment.Contains(skipFolder.Segment))
+                        {
+                            Log.Info($"Skipped {action.Source.File.FullName} because {skipFolder.Segment.GetSegmentString()} skipped.");
                             break;
+                        }
 
                         if (action.Source.IsFile)
+                        {
                             File.Copy(action.Source.File.FullName, destinationSegment, true);
+                            Log.Info($"Copied {action.Source.File.FullName}");
+                        }
                         else
                             DirectoryCopy(action.Source.Directory.FullName, destinationSegment, true, false);
                         break;
                     case ActionType.Update:
                         if (action.Source.Segment.Contains(skipFolder.Segment))
+                        {
+                            Log.Info($"Skipped {action.Source.File.FullName} because {skipFolder.Segment.GetSegmentString()} skipped.");
                             break;
+                        }
 
                         if (action.Source.IsFile)
+                        {
                             File.Copy(action.Source.File.FullName, action.Destination.File.FullName, true);
+                            Log.Info($"Copied {action.Source.File.FullName} (changed)");
+                        }
                         else
                             DirectoryCopy(action.Source.Directory.FullName,
                                 action.Destination.Directory.FullName, true, false);
@@ -72,7 +84,10 @@ namespace QuickCopy.Utilities
                 {
                     case ActionType.Delete:
                         if (!Options.EnableDeletes)
+                        {
+                            Log.Info("Deletes suppressed by config");
                             break;
+                        }
 
                         if (action.Destination.IsFile)
                             File.Delete(action.Destination.File.FullName);
