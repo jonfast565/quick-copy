@@ -29,21 +29,34 @@ namespace QuickCopy
 
             parsedArguments.WithParsed(o =>
             {
-                switch (o.Runtime)
+                if (o.UseConfigFile)
                 {
-                    case RuntimeType.Console:
-                        RunConsoleMode(o);
-                        break;
-                    case RuntimeType.Service:
-                        ServiceBase.Run(new WindowsService(o));
-                        break;
-                    case RuntimeType.Batch:
-                        RunBatchMode(o);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    var configFile = ConfigExtensions.BuildConfigurationFile(Environment.CurrentDirectory);
+                    PickRuntime(configFile);
+                }
+                else
+                {
+                    PickRuntime(o);
                 }
             });
+        }
+
+        private static void PickRuntime(ProgramOptions o)
+        {
+            switch (o.Runtime)
+            {
+                case RuntimeType.Console:
+                    RunConsoleMode(o);
+                    break;
+                case RuntimeType.Service:
+                    ServiceBase.Run(new WindowsService(o));
+                    break;
+                case RuntimeType.Batch:
+                    RunBatchMode(o);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         private static void ConsoleKeyListener(object obj)

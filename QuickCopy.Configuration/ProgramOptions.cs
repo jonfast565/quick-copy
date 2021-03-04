@@ -21,5 +21,8 @@ namespace QuickCopy.Configuration
 
         [Option('k', "skip", Required = false, HelpText = "The path fragment of some folder to skip")]
         public string SkipFolder { get; set; }
+
+        [Option('c', "config", Required = false, Default = false, HelpText = "Determines whether a config file will be used in this case")]
+        public bool UseConfigFile { get; set; }
     }
 }
