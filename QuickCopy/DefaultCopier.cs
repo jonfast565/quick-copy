@@ -26,7 +26,9 @@ namespace QuickCopy
 
         public void IncrementalCopy(List<FileInfoParserAction> actions)
         {
-            var skipFolder = new PathParser(Options.SkipFolder);
+            var skipFolders = Options.SkipFolders
+                .Select(x => new PathParser(x))
+                .ToList();
 
             var orderedCreates =
                 actions
@@ -44,9 +46,12 @@ namespace QuickCopy
                 {
                     case ActionType.Create:
                         var destinationSegment = action.GetDestinationFromSegment(Options.TargetDirectory);
-                        if (action.Source.Segment.ContainsAllOfSegment(skipFolder.Segment))
+
+                        foreach (var skipFolder in skipFolders.Where(skipFolder => 
+                            action.Source.Segment.ContainsAllOfSegment(skipFolder.Segment)))
                         {
-                            Log.Info($"Skipped {action.Source.GetPath()} because {skipFolder.Segment.GetSegmentString()} skipped.");
+                            Log.Info(
+                                $"Skipped {action.Source.GetPath()} because {skipFolder.Segment.GetSegmentString()} skipped.");
                             break;
                         }
 
@@ -61,9 +66,11 @@ namespace QuickCopy
                                 destinationSegment, true, false);
                         break;
                     case ActionType.Update:
-                        if (action.Source.Segment.ContainsAllOfSegment(skipFolder.Segment))
+                        foreach (var skipFolder in skipFolders
+                            .Where(skipFolder => action.Source.Segment.ContainsAllOfSegment(skipFolder.Segment)))
                         {
-                            Log.Info($"Skipped {action.Source.GetPath()} because {skipFolder.Segment.GetSegmentString()} skipped.");
+                            Log.Info(
+                                $"Skipped {action.Source.GetPath()} because {skipFolder.Segment.GetSegmentString()} skipped.");
                             break;
                         }
 

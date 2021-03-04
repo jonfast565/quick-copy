@@ -35,7 +35,7 @@ namespace QuickCopy.Configuration
                 TargetDirectory = config["TargetDirectory"],
                 CheckTime = config.GetValue<double>("CheckTime"),
                 EnableDeletes = config.GetValue<bool>("EnableDeletes"),
-                SkipFolder = config["SkipFolder"],
+                SkipFolders = config.GetValue<string[]>("SkipFolders"),
                 UseConfigFile = true
             };
 

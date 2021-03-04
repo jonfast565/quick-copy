@@ -19,8 +19,8 @@ namespace QuickCopy.Configuration
         [Option('d', "deletes", Required = false, Default = true, HelpText = "Enables/disables deletes in target (i.e. when the target has more items than the source)")]
         public bool EnableDeletes { get; set; }
 
-        [Option('k', "skip", Required = false, HelpText = "The path fragment of some folder to skip")]
-        public string SkipFolder { get; set; }
+        [Option('k', "skipFolders", Required = false, Separator = ',', HelpText = "The path fragment of some folder to skip")]
+        public string[] SkipFolders { get; set; }
 
         [Option('c', "config", Required = false, Default = false, HelpText = "Determines whether a config file will be used in this case")]
         public bool UseConfigFile { get; set; }
