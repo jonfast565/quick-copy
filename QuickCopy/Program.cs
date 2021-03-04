@@ -37,22 +37,51 @@ namespace QuickCopy
                     case RuntimeType.Service:
                         ServiceBase.Run(new WindowsService(o));
                         break;
+                    case RuntimeType.Batch:
+                        RunBatchMode(o);
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             });
         }
 
+        private static void ConsoleKeyListener(object obj)
+        {
+            var token = (CancellationTokenSource) obj;
+            while (true)
+            {
+                if (Console.ReadKey().Key != ConsoleKey.Q) continue;
+                token.Cancel(false);
+                Log.Info("Q key pressed, waiting for job to finish before cancelling.");
+                break;
+            }
+        }
+
         private static void RunConsoleMode(ProgramOptions opts)
         {
             Log.Info("Run in console mode.");
             Log.Info("Press 'q' to quit, and any other key to continue.");
-            while (true)
+
+            var cts = new CancellationTokenSource();
+            var t = new Thread(ConsoleKeyListener);
+            t.Start(cts);
+
+            while (!cts.Token.IsCancellationRequested)
             {
                 opts.RunIncrementalCopy();
                 Log.Info($"Waiting {opts.CheckTime}ms to continue.");
                 Thread.Sleep(Convert.ToInt32(opts.CheckTime));
             }
+
+            Log.Info("Exiting console mode");
+        }
+
+        private static void RunBatchMode(ProgramOptions opts)
+        {
+            Log.Info("Run in batch mode.");
+            opts.RunIncrementalCopy();
+            Log.Info("Batch completed");
         }
     }
 }

@@ -3,6 +3,7 @@
     public enum RuntimeType
     {
         Console,
-        Service
+        Service,
+        Batch
     }
 }
