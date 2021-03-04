@@ -43,12 +43,15 @@ namespace QuickCopy
 
             if (dir1Pp.Segment.Identical(dir2Pp.Segment))
             {
+                Log.Info("Source and destination paths are identical. " +
+                         "Please change the paths to allow for copying.");
                 return new List<FileInfoParserAction>();
             }
 
             if (!Directory.Exists(dir2.FullName))
             {
                 Directory.CreateDirectory(dir2.FullName);
+                Log.Info($"Directory {dir2.FullName} doesn't exist. Created it.");
             }
 
             Log.Info($"Enumerate source directory: {dir1.FullName}");
