@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace QuickCopy.PathLib
@@ -63,6 +64,22 @@ namespace QuickCopy.PathLib
             }
 
             return false;
+        }
+
+        public bool Identical(PathSegment otherSegment)
+        {
+            var str1 = GetSegmentString(Splitters.Splitter);
+            var str2 = otherSegment.GetSegmentString(Splitters.Splitter);
+            var split1 = str1.Split(Splitters.Splitter);
+            var split2 = str2.Split(Splitters.Splitter);
+
+            if (split1.Length != split2.Length)
+                return false;
+
+            return !split1.Where(
+                    (t, i) => !t.Equals(split2[i], 
+                    StringComparison.InvariantCultureIgnoreCase))
+                .Any();
         }
     }
 }

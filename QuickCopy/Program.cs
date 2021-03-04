@@ -6,7 +6,6 @@ using System.Threading;
 using CommandLine;
 using NLog;
 using QuickCopy.Configuration;
-using QuickCopy.Utilities;
 
 namespace QuickCopy
 {

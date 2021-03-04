@@ -38,6 +38,13 @@ namespace QuickCopy
         {
             var dir1 = new DirectoryInfo(Options.SourceDirectory);
             var dir2 = new DirectoryInfo(Options.TargetDirectory);
+            var dir1Pp = new PathParser(dir1.FullName);
+            var dir2Pp = new PathParser(dir2.FullName);
+
+            if (dir1Pp.Segment.Identical(dir2Pp.Segment))
+            {
+                return new List<FileInfoParserAction>();
+            }
 
             if (!Directory.Exists(dir2.FullName))
             {
@@ -74,13 +81,14 @@ namespace QuickCopy
             }
 
             Log.Info("Checking for deleted files");
-            var inSecondOnly = new List<FileInfoParser>();
-            foreach (var file2 in files2)
-            {
-                var foundInSecondOnly = files1.All(file1 => !string.Equals(file1.Segment.GetSegmentString(),
-                    file2.Segment.GetSegmentString(), StringComparison.CurrentCultureIgnoreCase));
-                if (foundInSecondOnly) inSecondOnly.Add(file2);
-            }
+            var inSecondOnly = (
+                from file2 in files2 
+                let foundInSecondOnly = 
+                    files1.All(file1 => !string.Equals(file1.Segment.GetSegmentString(), 
+                        file2.Segment.GetSegmentString(), 
+                        StringComparison.CurrentCultureIgnoreCase)) 
+                where foundInSecondOnly 
+                select file2).ToList();
 
             Log.Info("Enumerating possible actions");
             var actions = new List<FileInfoParserAction>();

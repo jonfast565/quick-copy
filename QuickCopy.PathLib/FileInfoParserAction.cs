@@ -1,4 +1,7 @@
-﻿namespace QuickCopy.PathLib
+﻿using System;
+using System.Security.Cryptography;
+
+namespace QuickCopy.PathLib
 {
     public class FileInfoParserAction
     {
