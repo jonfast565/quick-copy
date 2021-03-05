@@ -57,10 +57,12 @@ namespace QuickCopy
             Log.Info($"Enumerate source directory: {dir1.FullName}");
             var files1 = new FileSystemEnumerable(dir1, "*.*", SearchOption.AllDirectories)
                 .Select(x => new FileInfoParser(x.FullName, Options.SourceDirectory)).ToList();
+            Log.Info($"{files1.Count} item(s) found in source.");
 
             Log.Info($"Enumerate target directory: {dir2.FullName}");
             var files2 = new FileSystemEnumerable(dir2, "*.*", SearchOption.AllDirectories)
                 .Select(x => new FileInfoParser(x.FullName, Options.TargetDirectory)).ToList();
+            Log.Info($"{files2.Count} item(s) found in target.");
 
             var inFirstOnly = new List<FileInfoParser>();
             var inBoth = new List<Tuple<FileInfoParser, FileInfoParser>>();
