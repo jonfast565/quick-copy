@@ -63,7 +63,7 @@ namespace QuickCopy
                         }
                         else
                         {
-                            Directory.CreateDirectory(action.Destination.GetPath());
+                            Directory.CreateDirectory(destinationSegment);
                         }
 
                         break;

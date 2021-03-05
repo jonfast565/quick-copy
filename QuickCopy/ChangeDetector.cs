@@ -69,7 +69,7 @@ namespace QuickCopy
             foreach (var file1 in files1)
             {
                 var foundInFirstOnly = true;
-                foreach (var file2 in files2.Where(file2 =>
+                foreach (var file2 in files2.AsParallel().Where(file2 =>
                     string.Equals(file1.Segment.GetSegmentString(),
                         file2.Segment.GetSegmentString(),
                         StringComparison.CurrentCultureIgnoreCase)))
@@ -84,19 +84,22 @@ namespace QuickCopy
             }
 
             Log.Info("Checking for deleted files");
-            var inSecondOnly = (
-                from file2 in files2 
-                let foundInSecondOnly = 
-                    files1.All(file1 => !string.Equals(file1.Segment.GetSegmentString(), 
-                        file2.Segment.GetSegmentString(), 
-                        StringComparison.CurrentCultureIgnoreCase)) 
-                where foundInSecondOnly 
-                select file2).ToList();
+            var inSecondOnly = files2
+                .AsParallel()
+                .Select(file2 => new
+                {
+                    file2,
+                    foundInSecondOnly = files1.All(file1 => !string.Equals(file1.Segment.GetSegmentString(),
+                        file2.Segment.GetSegmentString(), StringComparison.CurrentCultureIgnoreCase))
+                })
+                .Where(t => t.foundInSecondOnly)
+                .Select(t => t.file2).ToList();
 
             Log.Info("Enumerating possible actions");
             var actions = new List<FileInfoParserAction>();
 
             var firstPaths = inFirstOnly
+                .AsParallel()
                 .Select(first =>
                     new FileInfoParserAction(first,
                         null,
@@ -104,6 +107,7 @@ namespace QuickCopy
                 .ToList();
 
             var secondPaths = inSecondOnly
+                .AsParallel()
                 .Select(second =>
                     new FileInfoParserAction(
                         null, second,
