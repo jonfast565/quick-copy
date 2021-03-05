@@ -71,17 +71,21 @@ namespace QuickCopy
             foreach (var file1 in files1)
             {
                 var foundInFirstOnly = true;
-                foreach (var file2 in files2.AsParallel().Where(file2 =>
+                var filesInBoth = files2.AsParallel()
+                    .Where(file2 =>
                     string.Equals(file1.Segment.GetSegmentString(),
                         file2.Segment.GetSegmentString(),
-                        StringComparison.CurrentCultureIgnoreCase)))
+                        StringComparison.CurrentCultureIgnoreCase));
+
+                foreach (var file2 in filesInBoth)
                 {
                     inBoth.Add(new Tuple<FileInfoParser, FileInfoParser>(file1, file2));
                     foundInFirstOnly = false;
                     break;
                 }
 
-                if (!foundInFirstOnly) continue;
+                if (!foundInFirstOnly) 
+                    continue;
                 inFirstOnly.Add(file1);
             }
 

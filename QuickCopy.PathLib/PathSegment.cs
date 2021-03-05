@@ -25,7 +25,9 @@ namespace QuickCopy.PathLib
         public string GetSegmentString(char separator = Splitters.WindowsSplitter)
         {
             var remainingSegments = GetRemainingSegments();
-            var result = remainingSegments.Aggregate($"{separator}",
+            var result = remainingSegments
+                .AsParallel()
+                .Aggregate($"{separator}",
                     (current, segment) => current + segment.Name + $"{separator}")
                 .TrimEnd(separator)
                 .TrimStart(separator);
@@ -76,8 +78,9 @@ namespace QuickCopy.PathLib
             if (split1.Length != split2.Length)
                 return false;
 
-            return !split1.Where(
-                    (t, i) => !t.Equals(split2[i], 
+            return !split1
+                .AsParallel()
+                .Where((t, i) => !t.Equals(split2[i], 
                     StringComparison.InvariantCultureIgnoreCase))
                 .Any();
         }
