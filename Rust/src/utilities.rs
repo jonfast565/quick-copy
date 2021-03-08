@@ -19,3 +19,7 @@ pub fn char_match(needle: char, haystack: char) -> bool {
 
     haystack_lower[0] == needle_lower[0]
 }
+
+pub fn path_is_unc(path: String) -> bool {
+    path.starts_with("\\\\")
+}

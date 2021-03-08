@@ -1,9 +1,20 @@
+use std::collections::VecDeque;
+use itertools::Itertools;
+use itertools::EitherOrBoth::{Left, Right, Both};
+
 use crate::utilities;
 
 pub enum ActionType {
     Create,
     Update,
     Delete
+}
+
+pub enum MatchType<First, Second> {
+    Match(First, Second),
+    NoMatch(First, Second),
+    OnlyOneLeft(First),
+    OnlyOneRight(Second)
 }
 
 pub const WINDOWS_SPLITTER: char = '\\';
@@ -138,5 +149,76 @@ impl PathParser {
         }
     }
 
+    pub fn get_differing_segment(&self, p : PathParser) -> Option<Box<PathSegment>> {
+        let other_segment_list = p.segment.as_ref().unwrap().get_remaining_segments();
+        let my_segments = self.segment.as_ref().unwrap().get_remaining_segments();
+
+        let zipped = my_segments.iter().zip_longest(other_segment_list);
+
+        for zip in zipped {
+            let zip_val = match zip {
+                Left(x) => MatchType::OnlyOneLeft(x.clone()),
+                Right(x) => MatchType::OnlyOneRight(x.clone()),
+                Both(x,y) => {
+                    if utilities::string_match_str(&x.name, &y.name) {
+                        MatchType::Match(x.clone(), y.clone());
+                    }
+                    MatchType::NoMatch(x.clone(), y.clone())
+                }
+            };
+
+            if let MatchType::OnlyOneRight(x) = &zip_val { 
+                return Some(x.next.clone().unwrap());
+            }
+
+            if let MatchType::NoMatch(_, y) = &zip_val {
+                return Some(y.next.clone().unwrap());
+            }
+        }
+
+        None
+    }
+
+    pub fn append_segment(&self, new_segment: String) -> &PathParser {
+        let segment_parser = PathParser::new(new_segment);
+        let last = self.get_last();
+        last.unwrap().next = segment_parser.segment;
+        self
+    }
     
+    fn get_last(&self) -> Option<PathSegment> {
+        let initial_segment = self.segment.clone();
+        let mut segment = initial_segment.clone();
+
+        let mut queue = VecDeque::<PathSegment>::new();
+        while let Some(ref x) = segment {
+            queue.push_back(*x.clone());
+            segment = Some(segment.unwrap().next.unwrap());
+        }
+
+        if queue.len() > 0 {
+            let last = queue.pop_back();
+            return last;
+        }
+
+        None
+    }
+
+    fn remove_last(&self) -> Option<PathSegment> {
+        let initial_segment = self.segment.clone();
+        let mut segment = initial_segment.clone();
+
+        let mut queue = VecDeque::<PathSegment>::new();
+        while let Some(ref x) = segment {
+            queue.push_back(*x.clone());
+            segment = Some(segment.unwrap().next.unwrap());
+        }
+
+        if queue.len() > 0 {
+            let last = queue.pop_back();
+            return last;
+        }
+
+        Some(*initial_segment.unwrap())
+    }
 }
