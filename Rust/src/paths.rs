@@ -99,3 +99,7 @@ impl PathSegment {
         true
     }
 }
+
+pub struct PathParser {
+    
+}
