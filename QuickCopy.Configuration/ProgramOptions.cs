@@ -15,7 +15,7 @@ namespace QuickCopy.Configuration
         public string TargetDirectory { get; set; }
 
         [Option('c', "check", Required = false, HelpText = "Time interval (in ms) to check when there is new content.")]
-        public double CheckTime { get; set; } = 3000D;
+        public double CheckTime { get; set; } = 30000D;
 
         [Option('d', "deletes", Required = false, Default = true, HelpText = "Enables/disables deletes in target (i.e. when the target has more items than the source)")]
         public bool EnableDeletes { get; set; }

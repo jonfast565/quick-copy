@@ -26,10 +26,6 @@ namespace QuickCopy
 
         public void IncrementalCopy(List<FileInfoParserAction> actions)
         {
-            var skipFolders = Options.SkipFolders
-                .Select(x => new PathParser(x))
-                .ToList();
-
             var orderedCreates =
                 actions
                     .Where(x => x.Type == ActionType.Create || x.Type == ActionType.Update)
@@ -46,15 +42,6 @@ namespace QuickCopy
                 {
                     case ActionType.Create:
                         var destinationSegment = action.GetDestinationFromSegment(Options.TargetDirectory);
-
-                        foreach (var skipFolder in skipFolders.Where(skipFolder => 
-                            action.Source.Segment.ContainsAllOfSegment(skipFolder.Segment)))
-                        {
-                            Log.Info(
-                                $"Skipped {action.Source.GetPath()} because {skipFolder.Segment.GetSegmentString()} skipped.");
-                            break;
-                        }
-
                         if (action.Source.IsFile)
                         {
                             File.Copy(action.Source.GetPath(), 
@@ -68,14 +55,6 @@ namespace QuickCopy
 
                         break;
                     case ActionType.Update:
-                        foreach (var skipFolder in skipFolders
-                            .Where(skipFolder => action.Source.Segment.ContainsAllOfSegment(skipFolder.Segment)))
-                        {
-                            Log.Info(
-                                $"Skipped {action.Source.GetPath()} because {skipFolder.Segment.GetSegmentString()} skipped.");
-                            break;
-                        }
-
                         if (action.Source.IsFile)
                         {
                             File.Copy(action.Source.GetPath(), 

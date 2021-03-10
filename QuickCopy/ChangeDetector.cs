@@ -65,41 +65,40 @@ namespace QuickCopy
             Log.Info($"{files2.Count} item(s) found in target.");
 
             var inFirstOnly = new List<FileInfoParser>();
+            var inSecondOnly = new List<FileInfoParser>();
             var inBoth = new List<Tuple<FileInfoParser, FileInfoParser>>();
+
+            var files1Hash = files1.ToDictionary(
+                file1 => file1.Segment.GetSegmentString().ToLowerInvariant(), 
+                file1 => file1.GetPath());
+            var files2Hash = files2.ToDictionary(
+                file2 => file2.Segment.GetSegmentString().ToLowerInvariant(), 
+                file2 => file2.GetPath());
 
             Log.Info("Checking for created or updated files");
             foreach (var file1 in files1)
             {
-                var foundInFirstOnly = true;
-                var filesInBoth = files2.AsParallel()
-                    .Where(file2 =>
-                    string.Equals(file1.Segment.GetSegmentString(),
-                        file2.Segment.GetSegmentString(),
-                        StringComparison.CurrentCultureIgnoreCase));
-
-                foreach (var file2 in filesInBoth)
+                files2Hash.TryGetValue(file1.Segment.GetSegmentString().ToLowerInvariant(), out var file2);
+                if (string.IsNullOrEmpty(file2))
                 {
-                    inBoth.Add(new Tuple<FileInfoParser, FileInfoParser>(file1, file2));
-                    foundInFirstOnly = false;
-                    break;
+                    inFirstOnly.Add(file1);
                 }
-
-                if (!foundInFirstOnly) 
-                    continue;
-                inFirstOnly.Add(file1);
+                else
+                {
+                    var fif = new FileInfoParser(file2, Options.TargetDirectory);
+                    inBoth.Add(new Tuple<FileInfoParser, FileInfoParser>(file1, fif));
+                }
             }
 
             Log.Info("Checking for deleted files");
-            var inSecondOnly = files2
-                .AsParallel()
-                .Select(file2 => new
-                {
-                    file2,
-                    foundInSecondOnly = files1.All(file1 => !string.Equals(file1.Segment.GetSegmentString(),
-                        file2.Segment.GetSegmentString(), StringComparison.CurrentCultureIgnoreCase))
-                })
-                .Where(t => t.foundInSecondOnly)
-                .Select(t => t.file2).ToList();
+            foreach (var file2 in files2)
+            {
+                files1Hash.TryGetValue(file2.Segment.GetSegmentString().ToLowerInvariant(), out var file1);
+                if (string.IsNullOrEmpty(file1)) 
+                { 
+                    inSecondOnly.Add(file2);
+                }
+            }
 
             Log.Info("Enumerating possible actions");
             var actions = new List<FileInfoParserAction>();
@@ -132,7 +131,35 @@ namespace QuickCopy
                         new FileInfoParserAction(item1, item2, ActionType.Update));
             }
 
-            return actions;
+            var skipFolders = Options.SkipFolders
+                .Select(x => new PathParser(x))
+                .ToList();
+
+            var actionsAfterSkipping = SkipFilesInPaths(actions, skipFolders);
+            return actionsAfterSkipping;
+        }
+
+        private static List<FileInfoParserAction> SkipFilesInPaths(List<FileInfoParserAction> actions,
+            List<PathParser> skipFolders)
+        {
+            var actionsAfterSkipping = new List<FileInfoParserAction>();
+            foreach (var action in actions)
+            {
+                foreach (var skipFolder in skipFolders)
+                {
+                    if (action.Source.Segment.ContainsAllOfSegment(skipFolder.Segment))
+                    {
+                        Log.Info(
+                            $"Skipped {action.Source.GetPath()} because {skipFolder.Segment.GetSegmentString()} skipped.");
+                    }
+                    else
+                    {
+                        actionsAfterSkipping.Add(action);
+                    }
+                }
+            }
+            
+            return actionsAfterSkipping;
         }
     }
 }
