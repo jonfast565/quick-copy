@@ -71,23 +71,24 @@ namespace QuickCopy
                         throw new ArgumentOutOfRangeException();
                 }
 
-            foreach (var action in orderedDeletes)
-                // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-                switch (action.Type)
-                {
-                    case ActionType.Delete:
-                        if (!Options.EnableDeletes)
-                        {
-                            Log.Info("Deletes suppressed by config");
+            if (!Options.EnableDeletes)
+            {
+                Log.Info("Deletes suppressed by config");
+            }
+            else
+            {
+                foreach (var action in orderedDeletes)
+                    // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+                    switch (action.Type)
+                    {
+                        case ActionType.Delete:
+                            if (action.Destination.IsFile)
+                                File.Delete(action.Destination.GetPath());
+                            else
+                                Directory.Delete(action.Destination.GetPath(), true);
                             break;
-                        }
-
-                        if (action.Destination.IsFile)
-                            File.Delete(action.Destination.GetPath());
-                        else
-                            Directory.Delete(action.Destination.GetPath(), true);
-                        break;
-                }
+                    }
+            }
         }
 
         private static void DirectoryCopy(string sourceDirName, string destDirName, bool recursive, bool cleanFolder)
