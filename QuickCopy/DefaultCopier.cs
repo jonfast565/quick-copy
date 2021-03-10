@@ -21,18 +21,30 @@ namespace QuickCopy
 
         public void Copy()
         {
-            DirectoryCopy(Options.SourceDirectory, Options.TargetDirectory, true, true);
+            foreach (var targetDirectory in Options.TargetDirectories)
+            {
+                DirectoryCopy(Options.SourceDirectory, targetDirectory, true, true);
+            }
         }
 
-        public void IncrementalCopy(List<FileInfoParserAction> actions)
+        public void IncrementalCopy(List<FileInfoParserActionList> actions)
         {
+            foreach (var action in actions)
+            {
+                IncrementalCopyOne(action);
+            }
+        }
+
+        private void IncrementalCopyOne(FileInfoParserActionList actionList)
+        {
+
             var orderedCreates =
-                actions
+                actionList.Actions
                     .Where(x => x.Type == ActionType.Create || x.Type == ActionType.Update)
                     .OrderBy(x => x.GetSourceLength());
 
             var orderedDeletes =
-                actions
+                actionList.Actions
                     .Where(x => x.Type == ActionType.Delete)
                     .OrderByDescending(x => x.GetDestinationLength());
 
@@ -41,10 +53,10 @@ namespace QuickCopy
                 switch (action.Type)
                 {
                     case ActionType.Create:
-                        var destinationSegment = action.GetDestinationFromSegment(Options.TargetDirectory);
+                        var destinationSegment = action.GetDestinationFromSegment(actionList.TargetDirectory);
                         if (action.Source.IsFile)
                         {
-                            File.Copy(action.Source.GetPath(), 
+                            File.Copy(action.Source.GetPath(),
                                 destinationSegment, true);
                             Log.Info($"Copied {action.Source.GetPath()}");
                         }
@@ -57,7 +69,7 @@ namespace QuickCopy
                     case ActionType.Update:
                         if (action.Source.IsFile)
                         {
-                            File.Copy(action.Source.GetPath(), 
+                            File.Copy(action.Source.GetPath(),
                                 action.Destination.GetPath(), true);
                             Log.Info($"Copied {action.Source.GetPath()} (changed)");
                         }

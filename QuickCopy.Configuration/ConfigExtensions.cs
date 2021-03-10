@@ -33,14 +33,18 @@ namespace QuickCopy.Configuration
             {
                 Runtime = (RuntimeType)Enum.Parse(typeof(RuntimeType), config["Runtime"], true),
                 SourceDirectory = config["SourceDirectory"],
-                TargetDirectory = config["TargetDirectory"],
+                TargetDirectories = config.GetSection("TargetDirectory")
+                    .AsEnumerable()
+                    .Select(x => x.Value)
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .ToList(),
                 CheckTime = config.GetValue<double>("CheckTime"),
                 EnableDeletes = config.GetValue<bool>("EnableDeletes"),
                 SkipFolders = config.GetSection("SkipFolders")
                     .AsEnumerable()
                     .Select(x => x.Value)
                     .Where(x => !string.IsNullOrEmpty(x))
-                    .ToArray(),
+                    .ToList(),
                 UseConfigFile = true
             };
 
@@ -49,9 +53,9 @@ namespace QuickCopy.Configuration
                 throw new Exception("Source directory not set");
             }
 
-            if (string.IsNullOrEmpty(result.TargetDirectory))
+            if (!result.TargetDirectories.Any() || result.TargetDirectories.Any(string.IsNullOrEmpty))
             {
-                throw new Exception("Source directory not set");
+                throw new Exception("Target directories not set, or one is an empty string/null value");
             }
 
             result.SkipFolders ??= new string[] { };

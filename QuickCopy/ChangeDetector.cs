@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using NLog;
+﻿using NLog;
 using QuickCopy.Configuration;
 using QuickCopy.PathLib;
 using QuickCopy.Utilities;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace QuickCopy
 {
@@ -27,17 +27,29 @@ namespace QuickCopy
             return threeWayMerge.Count > 0;
         }
 
-        public List<FileInfoParserAction> IncrementalChanges()
+        public List<FileInfoParserActionList> IncrementalChanges()
         {
             Log.Info("Checking for changes...");
             var threeWayMerge = ThreeWayMerge();
             return threeWayMerge;
         }
 
-        private List<FileInfoParserAction> ThreeWayMerge()
+        private List<FileInfoParserActionList> ThreeWayMerge()
         {
-            var dir1 = new DirectoryInfo(Options.SourceDirectory);
-            var dir2 = new DirectoryInfo(Options.TargetDirectory);
+            var results = new List<FileInfoParserActionList>();
+
+            foreach (var targetDirectory in Options.TargetDirectories)
+            {
+                results.Add(MergeSourceToTarget(Options.SourceDirectory, targetDirectory));
+            }
+
+            return results;
+        }
+
+        private FileInfoParserActionList MergeSourceToTarget(string sourceDirectory, string targetDirectory)
+        {
+            var dir1 = new DirectoryInfo(sourceDirectory);
+            var dir2 = new DirectoryInfo(targetDirectory);
             var dir1Pp = new PathParser(dir1.FullName);
             var dir2Pp = new PathParser(dir2.FullName);
 
@@ -45,7 +57,7 @@ namespace QuickCopy
             {
                 Log.Info("Source and destination paths are identical. " +
                          "Please change the paths to allow for copying.");
-                return new List<FileInfoParserAction>();
+                throw new Exception($"Identical source/target {sourceDirectory}");
             }
 
             if (!Directory.Exists(dir2.FullName))
@@ -61,7 +73,7 @@ namespace QuickCopy
 
             Log.Info($"Enumerate target directory: {dir2.FullName}");
             var files2 = new FileSystemEnumerable(dir2, "*.*", SearchOption.AllDirectories)
-                .Select(x => new FileInfoParser(x.FullName, Options.TargetDirectory)).ToList();
+                .Select(x => new FileInfoParser(x.FullName, targetDirectory)).ToList();
             Log.Info($"{files2.Count} item(s) found in target.");
 
             var inFirstOnly = new List<FileInfoParser>();
@@ -69,10 +81,10 @@ namespace QuickCopy
             var inBoth = new List<Tuple<FileInfoParser, FileInfoParser>>();
 
             var files1Hash = files1.ToDictionary(
-                file1 => file1.Segment.GetSegmentString().ToLowerInvariant(), 
+                file1 => file1.Segment.GetSegmentString().ToLowerInvariant(),
                 file1 => file1.GetPath());
             var files2Hash = files2.ToDictionary(
-                file2 => file2.Segment.GetSegmentString().ToLowerInvariant(), 
+                file2 => file2.Segment.GetSegmentString().ToLowerInvariant(),
                 file2 => file2.GetPath());
 
             Log.Info("Checking for created or updated files");
@@ -85,7 +97,7 @@ namespace QuickCopy
                 }
                 else
                 {
-                    var fif = new FileInfoParser(file2, Options.TargetDirectory);
+                    var fif = new FileInfoParser(file2, targetDirectory);
                     inBoth.Add(new Tuple<FileInfoParser, FileInfoParser>(file1, fif));
                 }
             }
@@ -97,8 +109,8 @@ namespace QuickCopy
             foreach (var file2 in files2)
             {
                 files1Hash.TryGetValue(file2.Segment.GetSegmentString().ToLowerInvariant(), out var file1);
-                if (string.IsNullOrEmpty(file1)) 
-                { 
+                if (string.IsNullOrEmpty(file1))
+                {
                     inSecondOnly.Add(file2);
                 }
             }
@@ -128,7 +140,7 @@ namespace QuickCopy
 
             foreach (var (item1, item2) in inBoth)
             {
-                if (!item1.IsFile || !item2.IsFile) 
+                if (!item1.IsFile || !item2.IsFile)
                     continue;
 
                 if (item1.File.Length != item2.File.Length)
@@ -144,7 +156,15 @@ namespace QuickCopy
             var actionsAfterSkipping = SkipFilesInPaths(actions, skipFolders);
 
             Log.Info($"{actionsAfterSkipping.Count} action(s) will be taken.");
-            return actionsAfterSkipping;
+
+            var result = new FileInfoParserActionList
+            {
+                Actions = actionsAfterSkipping,
+                SourceDirectory = sourceDirectory,
+                TargetDirectory = targetDirectory
+            };
+
+            return result;
         }
 
         private static List<FileInfoParserAction> SkipFilesInPaths(IReadOnlyCollection<FileInfoParserAction> actions,
