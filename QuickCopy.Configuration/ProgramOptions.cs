@@ -5,13 +5,13 @@ namespace QuickCopy.Configuration
 {
     public class ProgramOptions
     {
-        [Option('r', "runtime", Required = true, HelpText = "Sets the application runtime (console or service).")]
+        [Option('r', "runtime", Required = false, HelpText = "Sets the application runtime (console or service).")]
         public RuntimeType Runtime { get; set; }
 
-        [Option('s', "sourceDirectory", Required = true, HelpText = "Source directory to watch for changes.")]
+        [Option('s', "sourceDirectory", Required = false, HelpText = "Source directory to watch for changes.")]
         public string SourceDirectory { get; set; }
 
-        [Option('t', "targetDirectory", Required = true, HelpText = "Target directory.")]
+        [Option('t', "targetDirectory", Required = false, HelpText = "Target directory.")]
         public string TargetDirectory { get; set; }
 
         [Option('c', "check", Required = false, HelpText = "Time interval (in ms) to check when there is new content.")]
@@ -23,7 +23,7 @@ namespace QuickCopy.Configuration
         [Option('k', "skipFolders", Required = false, Separator = ',', HelpText = "The path fragment(s) of some folder(s) to skip")]
         public IList<string> SkipFolders { get; set; }
 
-        [Option('c', "config", Required = false, Default = false, HelpText = "Determines whether a config file will be used in this case")]
+        [Option('g', "config", Required = false, Default = false, HelpText = "Determines whether a config file will be used in this case")]
         public bool UseConfigFile { get; set; }
     }
 }

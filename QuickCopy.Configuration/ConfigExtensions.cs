@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using NLog;
@@ -35,9 +36,25 @@ namespace QuickCopy.Configuration
                 TargetDirectory = config["TargetDirectory"],
                 CheckTime = config.GetValue<double>("CheckTime"),
                 EnableDeletes = config.GetValue<bool>("EnableDeletes"),
-                SkipFolders = config.GetValue<string[]>("SkipFolders"),
+                SkipFolders = config.GetSection("SkipFolders")
+                    .AsEnumerable()
+                    .Select(x => x.Value)
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .ToArray(),
                 UseConfigFile = true
             };
+
+            if (string.IsNullOrEmpty(result.SourceDirectory))
+            {
+                throw new Exception("Source directory not set");
+            }
+
+            if (string.IsNullOrEmpty(result.TargetDirectory))
+            {
+                throw new Exception("Source directory not set");
+            }
+
+            result.SkipFolders ??= new string[] { };
 
             return result;
         }
