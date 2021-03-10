@@ -143,7 +143,7 @@ namespace QuickCopy
             List<PathParser> skipFolders)
         {
             var actionsAfterSkipping = new List<FileInfoParserAction>();
-            foreach (var action in actions)
+            foreach (var action in actions.Where(x => x.Type != ActionType.Delete))
             {
                 foreach (var skipFolder in skipFolders)
                 {
@@ -159,6 +159,7 @@ namespace QuickCopy
                 }
             }
             
+            actionsAfterSkipping.AddRange(actions.Where(x => x.Type == ActionType.Delete));
             return actionsAfterSkipping;
         }
     }
