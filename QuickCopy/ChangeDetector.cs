@@ -90,6 +90,9 @@ namespace QuickCopy
                 }
             }
 
+            Log.Info($"{inFirstOnly.Count} file(s) will be created.");
+            Log.Info($"{inBoth.Count} file(s) will be updated.");
+
             Log.Info("Checking for deleted files");
             foreach (var file2 in files2)
             {
@@ -99,6 +102,8 @@ namespace QuickCopy
                     inSecondOnly.Add(file2);
                 }
             }
+
+            Log.Info($"{inSecondOnly.Count} file(s) will be deleted.");
 
             Log.Info("Enumerating possible actions");
             var actions = new List<FileInfoParserAction>();
@@ -135,12 +140,15 @@ namespace QuickCopy
                 .Select(x => new PathParser(x))
                 .ToList();
 
+            Log.Info($"{actions.Count} action(s) found.");
             var actionsAfterSkipping = SkipFilesInPaths(actions, skipFolders);
+
+            Log.Info($"{actionsAfterSkipping.Count} action(s) will be taken.");
             return actionsAfterSkipping;
         }
 
-        private static List<FileInfoParserAction> SkipFilesInPaths(List<FileInfoParserAction> actions,
-            List<PathParser> skipFolders)
+        private static List<FileInfoParserAction> SkipFilesInPaths(IReadOnlyCollection<FileInfoParserAction> actions,
+            IReadOnlyCollection<PathParser> skipFolders)
         {
             var actionsAfterSkipping = new List<FileInfoParserAction>();
             foreach (var action in actions.Where(x => x.Type != ActionType.Delete))
