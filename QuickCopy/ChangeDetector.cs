@@ -90,8 +90,8 @@ namespace QuickCopy
                 }
             }
 
-            Log.Info($"{inFirstOnly.Count} file(s) will be created.");
-            Log.Info($"{inBoth.Count} file(s) will be updated.");
+            Log.Info($"{inFirstOnly.Count} file(s) may be created.");
+            Log.Info($"{inBoth.Count} file(s) may be updated.");
 
             Log.Info("Checking for deleted files");
             foreach (var file2 in files2)
@@ -103,7 +103,7 @@ namespace QuickCopy
                 }
             }
 
-            Log.Info($"{inSecondOnly.Count} file(s) will be deleted.");
+            Log.Info($"{inSecondOnly.Count} file(s) may be deleted.");
 
             Log.Info("Enumerating possible actions");
             var actions = new List<FileInfoParserAction>();
