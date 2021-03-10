@@ -33,7 +33,7 @@ namespace QuickCopy.Configuration
             {
                 Runtime = (RuntimeType)Enum.Parse(typeof(RuntimeType), config["Runtime"], true),
                 SourceDirectory = config["SourceDirectory"],
-                TargetDirectories = config.GetSection("TargetDirectory")
+                TargetDirectories = config.GetSection("TargetDirectories")
                     .AsEnumerable()
                     .Select(x => x.Value)
                     .Where(x => !string.IsNullOrEmpty(x))
