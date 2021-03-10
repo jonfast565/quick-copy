@@ -29,14 +29,21 @@ namespace QuickCopy
 
             parsedArguments.WithParsed(o =>
             {
-                if (o.UseConfigFile)
+                try
                 {
-                    var configFile = ConfigExtensions.BuildConfigurationFile(Environment.CurrentDirectory);
-                    PickRuntime(configFile);
+                    if (o.UseConfigFile)
+                    {
+                        var configFile = ConfigExtensions.BuildConfigurationFile(Environment.CurrentDirectory);
+                        PickRuntime(configFile);
+                    }
+                    else
+                    {
+                        PickRuntime(o);
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    PickRuntime(o);
+                    Log.Fatal(e);
                 }
             });
         }
